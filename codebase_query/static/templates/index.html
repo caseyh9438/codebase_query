@@ -1,0 +1,77 @@
+{% load static %}
+<html>
+  <head>
+    <title>GitHub Repository Processor</title>
+    <style>
+      /* Add some styling */
+      form {
+        padding: 20px;
+        background-color: lightgray;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        font-size: 18px;
+        margin: 10px;
+        width: 60%;
+        border-radius: 10px;
+        border: none;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 18px;
+        margin: 10px;
+        border-radius: 10px;
+        background-color: green;
+        color: white;
+        border: none;
+      }
+
+      .conversation {
+        padding: 20px;
+        background-color: lightblue;
+        border-radius: 10px;
+        text-align: left;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add a form to capture the repository URL -->
+    <form id="repo-form">
+      <input type="text" id="repo-url" placeholder="Enter GitHub repository URL">
+      <button id="submit-button">Submit</button>
+    </form>
+
+    <!-- Add a div to display the conversation -->
+    <div id="conversation" class="conversation"></div>
+
+    <!-- Add JavaScript to handle the form submission and display the conversation -->
+    <script>
+      document.getElementById("submit-button").addEventListener("click", function(event) {
+        event.preventDefault();
+
+        // Get the repository URL from the form
+        var repoUrl = document.getElementById("repo-url").value;
+
+        // Send the repository URL to the backend
+        fetch("/process-repo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ repoUrl: repoUrl })
+        })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(data) {
+            // Display the conversation in the conversation div
+            var conversationDiv = document.getElementById("conversation");
+            conversationDiv.innerHTML += "<p>" + data.prompt + "</p>";
+          });
+      });
+    </script>
+  </body>
+</html>
